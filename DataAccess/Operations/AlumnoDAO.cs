@@ -128,5 +128,72 @@ namespace DataAccess.Operations
                         };
             return query.ToList();
         }
+
+        public bool insertAlumnoGrado(int alumnoId, string nombreAlumno, string apellidosAlumno, string generoAlumno, DateTime fechaNacimientoAlumno, int gradoId, string seccion)
+        {
+            try
+            {
+                var existsAlumno = selectAlumno(alumnoId);
+
+                if (existsAlumno == null)
+                {
+                    insertAlumno(nombreAlumno, apellidosAlumno, generoAlumno, fechaNacimientoAlumno);
+                    var insert = selectAlumno(alumnoId);
+                    AlumnoGrado alumnoGrado = new AlumnoGrado();
+                    alumnoGrado.AlumnoId = insert.Id;
+                    alumnoGrado.GradoId = gradoId;
+                    alumnoGrado.Seccion = seccion;
+                    contexto.AlumnoGrados.Add(alumnoGrado);
+                    contexto.SaveChanges();
+                    return true;
+
+                }
+                else
+                {
+                    AlumnoGrado alumnoGrado = new AlumnoGrado();
+                    alumnoGrado.AlumnoId = existsAlumno.Id; 
+                    alumnoGrado.GradoId = gradoId;
+                    alumnoGrado.Seccion = seccion;
+                    contexto.AlumnoGrados.Add(alumnoGrado);
+                    contexto.SaveChanges();
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return false;
+            }
+        }
+
+        public bool deleteAlumnoAll(int id)
+        {
+            try
+            {
+                var alumno = contexto.Alumnos.Where(a => a.Id == id).FirstOrDefault();
+
+                if (alumno != null)
+                {
+
+                    var alumnoGrado = contexto.AlumnoGrados.Where(ag => ag.AlumnoId == id).FirstOrDefault();
+                    contexto.AlumnoGrados.Remove(alumnoGrado);
+                    contexto.Alumnos.Remove(alumno);
+                    contexto.SaveChanges();
+
+
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return false;
+            }
+        }
+
     }
 }

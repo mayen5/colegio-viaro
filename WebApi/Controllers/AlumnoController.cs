@@ -35,5 +35,17 @@ namespace WebApi.Controllers
             );
         }
 
+        [HttpPost("alumnoGrado")]
+        public bool insertAlumnoGrado([FromBody]Alumno alumno, int gradoId, string seccion)
+        {
+            return alumnoDAO.insertAlumnoGrado(alumno.Id, alumno.Nombre, alumno.Apellidos, alumno.Genero, alumno.FechaNacimiento, gradoId, seccion);
+        }
+
+        [HttpDelete("alumno")]
+        public bool deleteAlumno( int id)
+        {
+            return alumnoDAO.deleteAlumnoAll(id);
+        }
+
     }
 }
